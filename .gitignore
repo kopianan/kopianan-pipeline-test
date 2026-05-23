@@ -43,10 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/.gradle
+/android/local.properties
 
-# Native 
-/android/
-/ios/
+# Platform folders - keep /android/, remove only build artifacts
+# /android/          <- DO NOT IGNORE for CI/CD
+# /ios/              <- DO NOT IGNORE for CI/CD
 /linux/
 /macos/
 /windows/
