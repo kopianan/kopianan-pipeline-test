@@ -62,12 +62,14 @@ jobs:
         run: |
           mkdir -p /tmp
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-key.json
-          cat /tmp/firebase-key.json
+          echo "Firebase credentials file created"
+          ls -lh /tmp/firebase-key.json
+          echo "Verifying JSON format..."
+          jq empty /tmp/firebase-key.json && echo "✅ JSON valid" || echo "❌ JSON invalid"
 
       - name: Distribute to Firebase App Distribution
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
         run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
           firebase appdistribution:distribute app-debug.apk \
             --app="${{ secrets.FIREBASE_APP_ID }}" \
             --release-notes="GitHub Actions Build - ${{ github.sha }}" \
