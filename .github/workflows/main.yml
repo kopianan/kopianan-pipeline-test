@@ -1,4 +1,4 @@
-name: Build Debug APK
+name: Build & Distribute
 
 on:
   push:
@@ -44,3 +44,28 @@ jobs:
         with:
           name: debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
+
+  distribute:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: debug-apk
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Setup Firebase credentials
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-key.json
+
+      - name: Distribute to Firebase App Distribution
+        run: |
+          firebase appdistribution:distribute app-debug.apk \
+            --app="${{ secrets.FIREBASE_APP_ID }}" \
+            --release-notes="GitHub Actions Build - ${{ github.sha }}" \
+            --testers="${{ secrets.FIREBASE_TESTERS }}"
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
