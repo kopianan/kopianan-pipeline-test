@@ -69,8 +69,8 @@ jobs:
 
       - name: Distribute to Firebase App Distribution
         run: |
-          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
           firebase appdistribution:distribute app-debug.apk \
             --app="${{ secrets.FIREBASE_APP_ID }}" \
             --release-notes="GitHub Actions Build - ${{ github.sha }}" \
-            --testers="${{ secrets.FIREBASE_TESTERS }}"
+            --testers="${{ secrets.FIREBASE_TESTERS }}" \
+            --token="${{ secrets.FIREBASE_TOKEN }}"
