@@ -59,13 +59,16 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Setup Firebase credentials
-        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-key.json
+        run: |
+          mkdir -p /tmp
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-key.json
+          cat /tmp/firebase-key.json
 
       - name: Distribute to Firebase App Distribution
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
         run: |
           firebase appdistribution:distribute app-debug.apk \
             --app="${{ secrets.FIREBASE_APP_ID }}" \
             --release-notes="GitHub Actions Build - ${{ github.sha }}" \
             --testers="${{ secrets.FIREBASE_TESTERS }}"
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-key.json
