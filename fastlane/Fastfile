@@ -4,7 +4,7 @@ platform :android do
   desc "Build debug APK for development"
   lane :build_debug do
   sh(
-    command: "flutter build apk --debug",
+    command: "flutter build apk --debug --build-number=#{ENV['BUILD_NUMBER']}",
     log: true
   )
 end
