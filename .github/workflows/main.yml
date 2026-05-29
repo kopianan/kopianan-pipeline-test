@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build_and_distribute:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,44 +33,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+          bundler-cache: true
+
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Build debug APK
-        run: flutter build apk --debug
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
-
-  distribute:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download APK artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: debug-apk
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Setup Firebase credentials
-        run: |
-          mkdir -p /tmp
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > /tmp/firebase-key.json
-          echo "Firebase credentials file created"
-          ls -lh /tmp/firebase-key.json
-          echo "Verifying JSON format..."
-          jq empty /tmp/firebase-key.json && echo "✅ JSON valid" || echo "❌ JSON invalid"
-
-      - name: Distribute to Firebase App Distribution
-        run: |
-          firebase appdistribution:distribute app-debug.apk \
-            --app="${{ secrets.FIREBASE_APP_ID }}" \
-            --release-notes="GitHub Actions Build - ${{ github.sha }}" \
-            --testers="${{ secrets.FIREBASE_TESTERS }}" \
-            --token="${{ secrets.FIREBASE_TOKEN }}"
+      - name: Build & Distribute with Fastlane
+        run: fastlane build_and_distribute_firebase
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_TESTERS: ${{ secrets.FIREBASE_TESTERS }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}

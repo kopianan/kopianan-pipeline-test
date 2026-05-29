@@ -1,0 +1,29 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build debug APK for development"
+  lane :build_debug do
+  sh(
+    command: "flutter build apk --debug",
+    log: true
+  )
+end
+
+  desc "Build debug APK and distribute to Firebase"
+  lane :build_and_distribute_firebase do
+    build_debug
+
+    apk_path = "build/app/outputs/flutter-apk/app-debug.apk"
+
+    firebase_app_distribution(
+      app: ENV["FIREBASE_APP_ID"],
+      android_artifact_path: apk_path,
+      android_artifact_type: "APK",
+      testers: ENV["FIREBASE_TESTERS"],
+      service_credentials_json: ENV["FIREBASE_SERVICE_ACCOUNT_JSON"]
+
+    )
+
+    UI.success("✅ Build completed and distributed to Firebase!")
+  end
+end
