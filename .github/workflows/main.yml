@@ -43,7 +43,7 @@ jobs:
         run: flutter pub get
 
       - name: Build & Distribute with Fastlane
-        run: fastlane build_and_distribute_firebase
+        run: bundle exec fastlane build_and_distribute_firebase
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TESTERS: ${{ secrets.FIREBASE_TESTERS }}
