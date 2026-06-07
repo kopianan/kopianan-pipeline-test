@@ -68,8 +68,34 @@ platform :ios do
       profile_uuid: profile_uuid
     )
 
-    # Build IPA dengan Flutter — pakai absolute path untuk ExportOptions.plist
+    # Generate ExportOptions.plist with resolved team ID and profile UUID
     export_plist = File.expand_path("../ios/ExportOptions.plist", __dir__)
+    File.write(export_plist, <<~XML)
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+          <key>method</key>
+          <string>ad-hoc</string>
+          <key>provisioningProfiles</key>
+          <dict>
+              <key>com.kopianan.Pipeline</key>
+              <string>#{profile_uuid}</string>
+          </dict>
+          <key>signingStyle</key>
+          <string>manual</string>
+          <key>stripSwiftSymbols</key>
+          <true/>
+          <key>teamID</key>
+          <string>#{ENV["IOS_TEAM_ID"]}</string>
+          <key>uploadBitcode</key>
+          <false/>
+          <key>uploadSymbols</key>
+          <true/>
+      </dict>
+      </plist>
+    XML
+
     sh(
       command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=#{export_plist}",
       log: true
