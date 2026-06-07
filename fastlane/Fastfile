@@ -51,19 +51,19 @@ platform :ios do
       keychain_password: keychain_password
     )
 
-    # Install provisioning profile
-    install_provisioning_profile(
+    # Install provisioning profile dan ambil UUID-nya
+    profile_uuid = install_provisioning_profile(
       path: "AdHoc.mobileprovision"
     )
 
-    # Paksa Xcode pakai manual signing, bukan automatic
+    # Paksa Xcode pakai manual signing menggunakan UUID profile
     update_code_signing_settings(
       use_automatic_signing: false,
       path: "ios/Runner.xcodeproj",
       team_id: ENV["IOS_TEAM_ID"],
       bundle_identifier: "com.kopianan.Pipeline",
       code_sign_identity: "Apple Distribution",
-      profile_name: "AdHoc"
+      profile_uuid: profile_uuid
     )
 
     # Build IPA dengan Flutter
