@@ -68,9 +68,10 @@ platform :ios do
       profile_uuid: profile_uuid
     )
 
-    # Build IPA dengan Flutter
+    # Build IPA dengan Flutter — pakai absolute path untuk ExportOptions.plist
+    export_plist = File.expand_path("../ios/ExportOptions.plist", __dir__)
     sh(
-      command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=ios/ExportOptions.plist",
+      command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=#{export_plist}",
       log: true
     )
 
