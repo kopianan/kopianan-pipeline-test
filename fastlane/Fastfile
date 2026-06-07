@@ -70,7 +70,7 @@ platform :ios do
 
     # Build IPA dengan Flutter
     sh(
-      command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=../ios/ExportOptions.plist",
+      command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=ios/ExportOptions.plist",
       log: true
     )
 
