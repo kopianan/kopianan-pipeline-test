@@ -56,6 +56,16 @@ platform :ios do
       path: "AdHoc.mobileprovision"
     )
 
+    # Paksa Xcode pakai manual signing, bukan automatic
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "ios/Runner.xcodeproj",
+      team_id: ENV["IOS_TEAM_ID"],
+      bundle_identifier: "com.kopianan.Pipeline",
+      code_sign_identity: "Apple Distribution",
+      profile_name: "AdHoc"
+    )
+
     # Build IPA dengan Flutter
     sh(
       command: "flutter build ipa --release --build-number=#{ENV['BUILD_NUMBER']} --export-options-plist=../ios/ExportOptions.plist",
