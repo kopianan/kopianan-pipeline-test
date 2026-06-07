@@ -56,6 +56,4 @@ jobs:
           FIREBASE_APP_ID_IOS: ${{ secrets.FIREBASE_APP_ID_IOS }}
           FIREBASE_TESTERS: ${{ secrets.FIREBASE_TESTERS }}
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          MATCH_KEYCHAIN_NAME: "build.keychain"
-          MATCH_KEYCHAIN_PASSWORD: "temp_keychain_password"
         run: bundle exec fastlane ios build_and_distribute_firebase

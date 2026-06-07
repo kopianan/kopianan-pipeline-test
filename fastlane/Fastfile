@@ -30,16 +30,28 @@ end
 platform :ios do
   desc "Build IPA and distribute to Firebase App Distribution"
   lane :build_and_distribute_firebase do
-    # Install sertifikat dan provisioning profile ke keychain CI
-    setup_ci if ENV["CI"]
+    keychain_name = "ci_keychain"
+    keychain_password = "ci_keychain_password"
 
+    # Buat keychain sementara di CI
+    create_keychain(
+      name: keychain_name,
+      password: keychain_password,
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
+
+    # Import sertifikat ke keychain yang baru dibuat
     import_certificate(
       certificate_path: "distribution.p12",
       certificate_password: ENV["IOS_P12_PASSWORD"],
-      keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
-      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+      keychain_name: keychain_name,
+      keychain_password: keychain_password
     )
 
+    # Install provisioning profile
     install_provisioning_profile(
       path: "AdHoc.mobileprovision"
     )
