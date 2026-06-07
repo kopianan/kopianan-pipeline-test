@@ -51,10 +51,12 @@ platform :ios do
       keychain_password: keychain_password
     )
 
-    # Install provisioning profile dan ambil UUID-nya
-    profile_uuid = install_provisioning_profile(
+    # Install provisioning profile dan extract UUID dari file path yang dikembalikan
+    profile_path = install_provisioning_profile(
       path: "AdHoc.mobileprovision"
     )
+    profile_uuid = File.basename(profile_path, ".mobileprovision")
+    UI.message("Using provisioning profile UUID: #{profile_uuid}")
 
     # Paksa Xcode pakai manual signing menggunakan UUID profile
     update_code_signing_settings(
