@@ -75,7 +75,7 @@ platform :ios do
       log: true
     )
 
-    ipa_files = Dir.glob("build/ios/ipa/*.ipa")
+    ipa_files = Dir.glob(File.expand_path("../build/ios/ipa/*.ipa", __dir__))
     UI.user_error!("No IPA file found in build/ios/ipa/") if ipa_files.empty?
     ipa_path = ipa_files.first
     UI.message("Found IPA: #{ipa_path}")
