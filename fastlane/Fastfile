@@ -74,7 +74,10 @@ platform :ios do
       log: true
     )
 
-    ipa_path = "../build/ios/ipa/*.ipa"
+    ipa_files = Dir.glob("build/ios/ipa/*.ipa")
+    UI.user_error!("No IPA file found in build/ios/ipa/") if ipa_files.empty?
+    ipa_path = ipa_files.first
+    UI.message("Found IPA: #{ipa_path}")
 
     firebase_app_distribution(
       app: ENV["FIREBASE_APP_ID_IOS"],
